@@ -23,24 +23,14 @@ const STYLE_MAP = {
     lightShadow: 'rgba(120, 120, 120, 0.18)',
     veins: false,
   },
-  shell: {
-    dark: '#2d2824',
-    light: '#fff7ea',
-    edge: '#ceb078',
-    darkHighlight: 'rgba(255, 232, 212, 0.34)',
-    darkRing: 'rgba(255, 251, 244, 0.2)',
+  'shell-slate': {
+    dark: '#25292f',
+    light: '#fff8ea',
+    edge: '#b99a6a',
+    darkHighlight: 'rgba(240, 245, 252, 0.18)',
+    darkRing: 'rgba(255, 255, 255, 0.14)',
     lightHighlight: 'rgba(255, 255, 255, 0.98)',
     lightShadow: 'rgba(199, 173, 134, 0.28)',
-    veins: true,
-  },
-  slate: {
-    dark: '#262d34',
-    light: '#edf1f5',
-    edge: '#a9b3bf',
-    darkHighlight: 'rgba(255, 255, 255, 0.24)',
-    darkRing: 'rgba(255, 255, 255, 0.16)',
-    lightHighlight: 'rgba(255, 255, 255, 0.96)',
-    lightShadow: 'rgba(141, 157, 173, 0.24)',
     veins: false,
   },
 };
@@ -48,25 +38,36 @@ const STYLE_MAP = {
 const BOARD_MAP = {
   bamboo: {
     border: '#bc9354',
-    background:
+    frame:
       'linear-gradient(145deg, #f3d493, #e0b56b), repeating-linear-gradient(10deg, rgba(107, 69, 22, 0.1) 0 2px, rgba(255,255,255,0) 2px 10px)',
+    woodLight: '#f0ce88',
+    woodDark: '#c89349',
+    grainColor: 'rgba(107, 69, 22, 0.18)',
+    lineColor: 'rgba(66, 41, 16, 0.36)',
   },
   maple: {
     border: '#bb8e63',
-    background:
+    frame:
       'linear-gradient(145deg, #efc9a5, #dca47a), repeating-linear-gradient(12deg, rgba(122, 76, 42, 0.09) 0 2px, rgba(255,255,255,0) 2px 10px)',
+    woodLight: '#ebc09b',
+    woodDark: '#ca8857',
+    grainColor: 'rgba(108, 62, 32, 0.18)',
+    lineColor: 'rgba(74, 43, 20, 0.35)',
   },
   walnut: {
     border: '#725338',
-    background:
+    frame:
       'linear-gradient(150deg, #a5774f, #7f5537), repeating-linear-gradient(8deg, rgba(50, 29, 16, 0.18) 0 2px, rgba(255,255,255,0) 2px 10px)',
+    woodLight: '#b07f57',
+    woodDark: '#805235',
+    grainColor: 'rgba(45, 25, 13, 0.22)',
+    lineColor: 'rgba(35, 20, 11, 0.45)',
   },
 };
 
 const SHELL_WHITE_TEXTURES = Array.from({ length: 14 }, (_, index) => `go-stones/w${index + 1}.png`);
 const TEXTURE_FILES = {
   black: 'go-stones/b.png',
-  slateWhite: 'go-stones/w.png',
   shellWhite: SHELL_WHITE_TEXTURES,
 };
 
@@ -77,7 +78,6 @@ let logoObjectUrl = '';
 let textureError = false;
 const textureImages = {
   black: null,
-  slateWhite: null,
   shellWhite: [],
 };
 
@@ -113,8 +113,47 @@ function isFinderCell(row, col, count) {
 
 function applyBoardTheme(boardName) {
   const board = BOARD_MAP[boardName] || BOARD_MAP.bamboo;
-  qrFrame.style.background = board.background;
+  qrFrame.style.background = board.frame;
   qrFrame.style.borderColor = board.border;
+}
+
+function drawBoardSurface(board, totalCells, cellSize) {
+  const base = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  base.addColorStop(0, board.woodLight);
+  base.addColorStop(1, board.woodDark);
+  ctx.fillStyle = base;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 70; i += 1) {
+    const x = (i / 69) * canvas.width;
+    const wobble = Math.sin(i * 0.85) * 7;
+    const alpha = 0.07 + ((i % 5) / 100);
+    ctx.strokeStyle = board.grainColor.replace(/0\.\d+\)$/, `${alpha.toFixed(2)})`);
+    ctx.lineWidth = 1 + (i % 4 === 0 ? 1 : 0);
+    ctx.beginPath();
+    ctx.moveTo(x + wobble, 0);
+    ctx.lineTo(x - wobble, canvas.height);
+    ctx.stroke();
+  }
+
+  const start = cellSize * 0.5;
+  const end = canvas.width - cellSize * 0.5;
+  ctx.strokeStyle = board.lineColor;
+  ctx.lineWidth = Math.max(1, cellSize * 0.06);
+
+  for (let i = 0; i < totalCells; i += 1) {
+    const point = (i + 0.5) * cellSize;
+    ctx.beginPath();
+    ctx.moveTo(start, point);
+    ctx.lineTo(end, point);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(point, start);
+    ctx.lineTo(point, end);
+    ctx.stroke();
+  }
 }
 
 function drawSimpleStone(x, y, size, theme, dark) {
@@ -146,14 +185,6 @@ function drawSimpleStone(x, y, size, theme, dark) {
   ctx.lineWidth = Math.max(1, size * 0.06);
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius * 0.92, 0, Math.PI * 2);
-  ctx.stroke();
-
-  if (!dark || !theme.veins) return;
-
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.17)';
-  ctx.lineWidth = Math.max(1, size * 0.05);
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radius * 0.55, 0.8, 2.4);
   ctx.stroke();
 }
 
@@ -249,16 +280,15 @@ function drawCenterLogo(cellCount, cellSize, theme) {
 
 function drawQr(qr, styleName) {
   const theme = STYLE_MAP[styleName] || STYLE_MAP.simple;
+  const board = BOARD_MAP[boardSelect.value] || BOARD_MAP.bamboo;
   const quietZone = 4;
   const cellCount = qr.getModuleCount();
   const totalCells = cellCount + quietZone * 2;
   const cellSize = canvas.width / totalCells;
 
   applyBoardTheme(boardSelect.value);
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#f8f8f8';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawBoardSurface(board, totalCells, cellSize);
 
   for (let row = 0; row < cellCount; row += 1) {
     for (let col = 0; col < cellCount; col += 1) {
@@ -277,21 +307,10 @@ function drawQr(qr, styleName) {
         continue;
       }
 
-      if (styleName === 'shell') {
-        if (isDark) {
-          drawTexturedStone(x, y, cellSize, textureImages.black, 'rgba(255, 255, 255, 0.25)');
-        } else {
-          drawTexturedStone(x, y, cellSize, randomShellTexture(), 'rgba(196, 178, 146, 0.42)');
-        }
-        continue;
-      }
-
-      if (styleName === 'slate') {
-        if (isDark) {
-          drawTexturedStone(x, y, cellSize, textureImages.black, 'rgba(255, 255, 255, 0.22)');
-        } else {
-          drawTexturedStone(x, y, cellSize, textureImages.slateWhite, 'rgba(170, 170, 170, 0.34)');
-        }
+      if (isDark) {
+        drawTexturedStone(x, y, cellSize, textureImages.black, 'rgba(255, 255, 255, 0.22)');
+      } else {
+        drawTexturedStone(x, y, cellSize, randomShellTexture(), 'rgba(196, 178, 146, 0.42)');
       }
     }
   }
@@ -301,12 +320,14 @@ function drawQr(qr, styleName) {
 
 function drawPlaceholder() {
   applyBoardTheme(boardSelect.value);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const board = BOARD_MAP[boardSelect.value] || BOARD_MAP.bamboo;
+  drawBoardSurface(board, 19, canvas.width / 19);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+  ctx.fillRect(canvas.width * 0.12, canvas.height * 0.42, canvas.width * 0.76, canvas.height * 0.16);
   ctx.fillStyle = '#2c2c2c';
   ctx.font = '600 24px "Source Sans 3", sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('Enter a link to generate QR', canvas.width / 2, canvas.height / 2);
+  ctx.fillText('Enter a link to generate QR', canvas.width / 2, canvas.height / 2 + 8);
 }
 
 function renderFromState() {
@@ -353,14 +374,12 @@ function loadTexture(path) {
 
 async function preloadTextures() {
   try {
-    const [black, slateWhite, ...shells] = await Promise.all([
+    const [black, ...shells] = await Promise.all([
       loadTexture(TEXTURE_FILES.black),
-      loadTexture(TEXTURE_FILES.slateWhite),
       ...TEXTURE_FILES.shellWhite.map((path) => loadTexture(path)),
     ]);
 
     textureImages.black = black;
-    textureImages.slateWhite = slateWhite;
     textureImages.shellWhite = shells;
   } catch {
     textureError = true;
