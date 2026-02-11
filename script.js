@@ -120,7 +120,7 @@ function applyBoardTheme(boardName) {
   qrFrame.style.borderColor = board.border;
 }
 
-function drawBoardSurface(board, totalCells, cellSize) {
+function drawBoardSurface(board, gridCells, cellSize, offsetCells = 0) {
   const base = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
   base.addColorStop(0, board.woodLight);
   base.addColorStop(1, board.woodDark);
@@ -140,8 +140,8 @@ function drawBoardSurface(board, totalCells, cellSize) {
     ctx.stroke();
   }
 
-  const start = cellSize * 0.5;
-  const end = canvas.width - cellSize * 0.5;
+  const start = (offsetCells + 0.5) * cellSize;
+  const end = (offsetCells + gridCells - 0.5) * cellSize;
   const boardSize = end - start;
 
   ctx.strokeStyle = 'rgba(59, 35, 14, 0.38)';
@@ -151,8 +151,8 @@ function drawBoardSurface(board, totalCells, cellSize) {
   ctx.strokeStyle = board.lineColor;
   ctx.lineWidth = Math.max(1.2, cellSize * 0.075);
 
-  for (let i = 0; i < totalCells; i += 1) {
-    const point = (i + 0.5) * cellSize;
+  for (let i = 0; i < gridCells; i += 1) {
+    const point = (offsetCells + i + 0.5) * cellSize;
     ctx.beginPath();
     ctx.moveTo(start, point);
     ctx.lineTo(end, point);
@@ -164,12 +164,12 @@ function drawBoardSurface(board, totalCells, cellSize) {
     ctx.stroke();
   }
 
-  const stars = [3, Math.floor((totalCells - 1) / 2), totalCells - 4];
+  const stars = [3, Math.floor((gridCells - 1) / 2), gridCells - 4];
   ctx.fillStyle = board.starColor;
   for (const row of stars) {
     for (const col of stars) {
-      const x = (col + 0.5) * cellSize;
-      const y = (row + 0.5) * cellSize;
+      const x = (offsetCells + col + 0.5) * cellSize;
+      const y = (offsetCells + row + 0.5) * cellSize;
       ctx.beginPath();
       ctx.arc(x, y, Math.max(1.5, cellSize * 0.12), 0, Math.PI * 2);
       ctx.fill();
@@ -318,7 +318,7 @@ function drawQr(qr, styleName) {
 
   applyBoardTheme(boardSelect.value);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBoardSurface(board, totalCells, cellSize);
+  drawBoardSurface(board, cellCount, cellSize, quietZone);
 
   for (let row = 0; row < cellCount; row += 1) {
     for (let col = 0; col < cellCount; col += 1) {
