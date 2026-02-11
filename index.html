@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Stone QR Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Marcellus&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel controls">
+        <h1>Go Stone QR Generator</h1>
+        <p class="lead">Turn any link into a QR code with Go stone-inspired styling.</p>
+
+        <form id="qr-form" autocomplete="off">
+          <label for="url-input">Link</label>
+          <input
+            id="url-input"
+            name="url"
+            type="url"
+            placeholder="https://example.com/game-review"
+            required
+          />
+
+          <label for="style-select">Stone Style</label>
+          <select id="style-select" name="style">
+            <option value="simple">Simple</option>
+            <option value="shell">Shell</option>
+            <option value="jade">Jade</option>
+            <option value="slate">Slate</option>
+          </select>
+
+          <button type="submit">Generate QR Code</button>
+        </form>
+
+        <p id="message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="panel preview">
+        <div class="qr-frame" id="qr-frame">
+          <canvas id="qr-canvas" width="512" height="512" aria-label="Generated QR code"></canvas>
+        </div>
+        <button id="download-btn" type="button">Download PNG</button>
+      </section>
+    </main>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>

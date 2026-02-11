@@ -1,0 +1,140 @@
+:root {
+  --bg: #f4efe1;
+  --text: #202020;
+  --panel: #fffaf0;
+  --panel-border: #d9ccaf;
+  --accent: #876c38;
+  --accent-hover: #6f582d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Source Sans 3", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 15%, #fff6df 0%, transparent 35%),
+    radial-gradient(circle at 85% 20%, #ead8af 0%, transparent 30%),
+    linear-gradient(160deg, #f8f1dd, var(--bg));
+}
+
+.app {
+  width: min(1000px, 92vw);
+  margin: 4rem auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 14px 30px rgba(58, 42, 8, 0.14);
+}
+
+h1 {
+  margin: 0;
+  font-family: "Marcellus", serif;
+  letter-spacing: 0.02em;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+}
+
+.lead {
+  margin-top: 0.7rem;
+  margin-bottom: 1.3rem;
+  font-size: 1.05rem;
+}
+
+form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+label {
+  font-weight: 700;
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid #c7b58f;
+  background: #fffdf8;
+  color: var(--text);
+  border-radius: 10px;
+  padding: 0.72rem 0.8rem;
+}
+
+input:focus,
+select:focus,
+button:focus-visible {
+  outline: 3px solid #c8ae67;
+  outline-offset: 2px;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.82rem 0.9rem;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+#message {
+  min-height: 1.3rem;
+  margin: 0.8rem 0 0;
+  font-size: 0.95rem;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.qr-frame {
+  width: min(520px, 100%);
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  background: #f8f3e5;
+  border: 1px solid #ceb788;
+  padding: 1.1rem;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+#download-btn {
+  width: min(280px, 100%);
+}
+
+@media (max-width: 840px) {
+  .app {
+    margin: 1.4rem auto;
+    grid-template-columns: 1fr;
+  }
+}
