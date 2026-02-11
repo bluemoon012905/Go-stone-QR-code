@@ -66,6 +66,16 @@ const BOARD_MAP = {
     lineColor: 'rgba(35, 20, 11, 0.62)',
     starColor: 'rgba(25, 14, 8, 0.74)',
   },
+  mono: {
+    border: '#2a2a2a',
+    frame:
+      'linear-gradient(145deg, #eeeeee, #d9d9d9), repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0 1px, rgba(255,255,255,0) 1px 10px)',
+    woodLight: '#f8f8f8',
+    woodDark: '#e3e3e3',
+    grainColor: 'rgba(0, 0, 0, 0.08)',
+    lineColor: 'rgba(0, 0, 0, 0.78)',
+    starColor: 'rgba(0, 0, 0, 0.9)',
+  },
 };
 
 const SHELL_WHITE_TEXTURES = Array.from({ length: 14 }, (_, index) => `go-stones/w${index + 1}.png`);
@@ -311,7 +321,7 @@ function drawCenterLogo(cellCount, cellSize, theme) {
 function drawQr(qr, styleName) {
   const theme = STYLE_MAP[styleName] || STYLE_MAP.simple;
   const board = BOARD_MAP[boardSelect.value] || BOARD_MAP.bamboo;
-  const quietZone = 2;
+  const quietZone = 0;
   const cellCount = qr.getModuleCount();
   const totalCells = cellCount + quietZone * 2;
   const cellSize = canvas.width / totalCells;
