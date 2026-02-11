@@ -32,9 +32,32 @@
           <select id="style-select" name="style">
             <option value="simple">Simple</option>
             <option value="shell">Shell</option>
-            <option value="jade">Jade</option>
             <option value="slate">Slate</option>
           </select>
+
+          <label for="board-select">Board Wood</label>
+          <select id="board-select" name="board">
+            <option value="bamboo">Bamboo</option>
+            <option value="maple">Maple</option>
+            <option value="walnut">Walnut</option>
+          </select>
+
+          <label for="logo-select">Center Logo</label>
+          <select id="logo-select" name="logo">
+            <option value="none">None</option>
+            <option value="badge">Go Badge</option>
+            <option value="upload">Upload Image</option>
+          </select>
+
+          <div class="logo-upload-row" id="logo-upload-row" hidden>
+            <label for="logo-upload">Upload Logo</label>
+            <input id="logo-upload" name="logo-upload" type="file" accept="image/*" />
+          </div>
+
+          <div class="logo-size-row">
+            <label for="logo-size">Logo Size</label>
+            <input id="logo-size" name="logo-size" type="range" min="12" max="28" step="1" value="18" />
+          </div>
 
           <button type="submit">Generate QR Code</button>
         </form>

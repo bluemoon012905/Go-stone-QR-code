@@ -76,6 +76,18 @@ select {
   padding: 0.72rem 0.8rem;
 }
 
+input[type="file"] {
+  background: #fff8eb;
+  padding: 0.52rem 0.6rem;
+}
+
+input[type="range"] {
+  padding: 0;
+  accent-color: #7d6333;
+  background: transparent;
+  border: 0;
+}
+
 input:focus,
 select:focus,
 button:focus-visible {
@@ -116,7 +128,15 @@ button:hover {
   width: min(520px, 100%);
   aspect-ratio: 1 / 1;
   border-radius: 18px;
-  background: #f8f3e5;
+  background:
+    linear-gradient(145deg, #f4da9d, #e2bd74),
+    repeating-linear-gradient(
+      12deg,
+      rgba(116, 78, 27, 0.09) 0px,
+      rgba(116, 78, 27, 0.09) 2px,
+      rgba(255, 255, 255, 0) 2px,
+      rgba(255, 255, 255, 0) 10px
+    );
   border: 1px solid #ceb788;
   padding: 1.1rem;
 }
