@@ -178,7 +178,7 @@ function drawBoardSurface(board, totalCells, cellSize) {
 }
 
 function drawSimpleStone(x, y, size, theme, dark) {
-  const radius = size * 0.36;
+  const radius = size * 0.39;
   const centerX = x + size / 2;
   const centerY = y + size / 2;
   const startColor = dark ? theme.darkHighlight : theme.lightHighlight;
@@ -216,7 +216,7 @@ function drawSimpleStone(x, y, size, theme, dark) {
 }
 
 function drawTexturedStone(x, y, size, image, edgeColor) {
-  const radius = size * 0.36;
+  const radius = size * 0.39;
   const centerX = x + size / 2;
   const centerY = y + size / 2;
 
@@ -311,7 +311,7 @@ function drawCenterLogo(cellCount, cellSize, theme) {
 function drawQr(qr, styleName) {
   const theme = STYLE_MAP[styleName] || STYLE_MAP.simple;
   const board = BOARD_MAP[boardSelect.value] || BOARD_MAP.bamboo;
-  const quietZone = 4;
+  const quietZone = 2;
   const cellCount = qr.getModuleCount();
   const totalCells = cellCount + quietZone * 2;
   const cellSize = canvas.width / totalCells;
