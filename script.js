@@ -188,29 +188,31 @@ function drawBoardSurface(board, gridCells, cellSize, offsetCells = 0) {
 }
 
 function drawSimpleStone(x, y, size, theme, dark) {
-  const radius = size * 0.39;
+  const radius = size * 0.42;
   const centerX = x + size / 2;
   const centerY = y + size / 2;
-  const startColor = dark ? theme.darkHighlight : theme.lightHighlight;
-  const midColor = dark ? theme.dark : theme.light;
-  const edgeColor = dark ? '#050505' : '#dfe5e2';
+  const edgeColor = dark ? '#020202' : '#dfe5e2';
 
-  const base = ctx.createRadialGradient(
-    centerX - radius * 0.35,
-    centerY - radius * 0.35,
-    radius * 0.2,
-    centerX,
-    centerY,
-    radius,
-  );
-  base.addColorStop(0, startColor);
-  base.addColorStop(0.7, midColor);
-  base.addColorStop(1, edgeColor);
+  let fill = '#000000';
+  if (!dark) {
+    const base = ctx.createRadialGradient(
+      centerX - radius * 0.35,
+      centerY - radius * 0.35,
+      radius * 0.2,
+      centerX,
+      centerY,
+      radius,
+    );
+    base.addColorStop(0, theme.lightHighlight);
+    base.addColorStop(0.7, theme.light);
+    base.addColorStop(1, edgeColor);
+    fill = base;
+  }
 
   ctx.shadowColor = 'rgba(0, 0, 0, 0.25)';
   ctx.shadowBlur = size * 0.14;
   ctx.shadowOffsetY = size * 0.04;
-  ctx.fillStyle = base;
+  ctx.fillStyle = fill;
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
   ctx.fill();
@@ -226,7 +228,7 @@ function drawSimpleStone(x, y, size, theme, dark) {
 }
 
 function drawTexturedStone(x, y, size, image, edgeColor) {
-  const radius = size * 0.39;
+  const radius = size * 0.42;
   const centerX = x + size / 2;
   const centerY = y + size / 2;
 
