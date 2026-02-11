@@ -9,7 +9,7 @@ A lightweight static web app that turns any link into a QR code with Go-stone in
 - Select board wood beneath the QR: `bamboo`, `maple`, `walnut`.
 - Add an optional center logo (`Go Badge` or uploaded image) with adjustable size.
 - Render both dark and light QR modules as stones for a full-board look.
-- Draw wood grain + Go board lines so stones sit on visible intersections.
+- Draw wood grain + Go board lines (with star points) so stones sit on visible intersections.
 - Download generated QR as PNG.
 - GitHub Pages deployment workflow included.
 

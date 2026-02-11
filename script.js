@@ -43,7 +43,8 @@ const BOARD_MAP = {
     woodLight: '#f0ce88',
     woodDark: '#c89349',
     grainColor: 'rgba(107, 69, 22, 0.18)',
-    lineColor: 'rgba(66, 41, 16, 0.36)',
+    lineColor: 'rgba(66, 41, 16, 0.54)',
+    starColor: 'rgba(54, 33, 14, 0.62)',
   },
   maple: {
     border: '#bb8e63',
@@ -52,7 +53,8 @@ const BOARD_MAP = {
     woodLight: '#ebc09b',
     woodDark: '#ca8857',
     grainColor: 'rgba(108, 62, 32, 0.18)',
-    lineColor: 'rgba(74, 43, 20, 0.35)',
+    lineColor: 'rgba(74, 43, 20, 0.5)',
+    starColor: 'rgba(59, 33, 16, 0.58)',
   },
   walnut: {
     border: '#725338',
@@ -61,7 +63,8 @@ const BOARD_MAP = {
     woodLight: '#b07f57',
     woodDark: '#805235',
     grainColor: 'rgba(45, 25, 13, 0.22)',
-    lineColor: 'rgba(35, 20, 11, 0.45)',
+    lineColor: 'rgba(35, 20, 11, 0.62)',
+    starColor: 'rgba(25, 14, 8, 0.74)',
   },
 };
 
@@ -139,8 +142,14 @@ function drawBoardSurface(board, totalCells, cellSize) {
 
   const start = cellSize * 0.5;
   const end = canvas.width - cellSize * 0.5;
+  const boardSize = end - start;
+
+  ctx.strokeStyle = 'rgba(59, 35, 14, 0.38)';
+  ctx.lineWidth = Math.max(2, cellSize * 0.09);
+  ctx.strokeRect(start, start, boardSize, boardSize);
+
   ctx.strokeStyle = board.lineColor;
-  ctx.lineWidth = Math.max(1, cellSize * 0.06);
+  ctx.lineWidth = Math.max(1.2, cellSize * 0.075);
 
   for (let i = 0; i < totalCells; i += 1) {
     const point = (i + 0.5) * cellSize;
@@ -154,10 +163,22 @@ function drawBoardSurface(board, totalCells, cellSize) {
     ctx.lineTo(point, end);
     ctx.stroke();
   }
+
+  const stars = [3, Math.floor((totalCells - 1) / 2), totalCells - 4];
+  ctx.fillStyle = board.starColor;
+  for (const row of stars) {
+    for (const col of stars) {
+      const x = (col + 0.5) * cellSize;
+      const y = (row + 0.5) * cellSize;
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(1.5, cellSize * 0.12), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
 }
 
 function drawSimpleStone(x, y, size, theme, dark) {
-  const radius = size * 0.44;
+  const radius = size * 0.36;
   const centerX = x + size / 2;
   const centerY = y + size / 2;
   const startColor = dark ? theme.darkHighlight : theme.lightHighlight;
@@ -176,10 +197,16 @@ function drawSimpleStone(x, y, size, theme, dark) {
   base.addColorStop(0.7, midColor);
   base.addColorStop(1, edgeColor);
 
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.25)';
+  ctx.shadowBlur = size * 0.14;
+  ctx.shadowOffsetY = size * 0.04;
   ctx.fillStyle = base;
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
   ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 
   ctx.strokeStyle = dark ? theme.darkRing : theme.lightShadow;
   ctx.lineWidth = Math.max(1, size * 0.06);
@@ -189,7 +216,7 @@ function drawSimpleStone(x, y, size, theme, dark) {
 }
 
 function drawTexturedStone(x, y, size, image, edgeColor) {
-  const radius = size * 0.44;
+  const radius = size * 0.36;
   const centerX = x + size / 2;
   const centerY = y + size / 2;
 
@@ -202,6 +229,9 @@ function drawTexturedStone(x, y, size, image, edgeColor) {
   }
 
   ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.24)';
+  ctx.shadowBlur = size * 0.14;
+  ctx.shadowOffsetY = size * 0.04;
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
   ctx.closePath();
