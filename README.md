@@ -29,14 +29,6 @@ Then open `http://localhost:8080`.
 
 This repository includes `.github/workflows/deploy.yml`.
 
-1. Push this repo to GitHub.
-2. In GitHub, open `Settings` -> `Pages`.
-3. Under `Build and deployment`, choose `Source: GitHub Actions`.
-4. Push to `main` (or run the workflow manually from `Actions`).
-
-After workflow success, your site will be available at:
-
-- `https://<your-username>.github.io/<your-repo>/`
 
 ## Project structure
 
