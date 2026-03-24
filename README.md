@@ -1,7 +1,8 @@
 # Go Stone QR Generator
 
 A lightweight static web app that turns any link into a QR code with Go-stone inspired rendering styles.
-
+GitHub page: (try it!)
+https://bluemoon012905.github.io/Go-stone-QR-code/
 ## Features
 
 - Generate QR codes from links (auto-adds `https://` when missing).
