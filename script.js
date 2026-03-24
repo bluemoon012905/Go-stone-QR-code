@@ -2,6 +2,7 @@ const form = document.querySelector('#qr-form');
 const urlInput = document.querySelector('#url-input');
 const styleSelect = document.querySelector('#style-select');
 const boardSelect = document.querySelector('#board-select');
+const finderSelect = document.querySelector('#finder-select');
 const logoSelect = document.querySelector('#logo-select');
 const logoUploadRow = document.querySelector('#logo-upload-row');
 const logoUploadInput = document.querySelector('#logo-upload');
@@ -122,6 +123,22 @@ function isFinderCell(row, col, count) {
   const topRight = row < 7 && col >= count - 7;
   const bottomLeft = row >= count - 7 && col < 7;
   return topLeft || topRight || bottomLeft;
+}
+
+function fillRoundedRect(x, y, width, height, radius) {
+  const safeRadius = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + safeRadius, y);
+  ctx.lineTo(x + width - safeRadius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
+  ctx.lineTo(x + width, y + height - safeRadius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+  ctx.lineTo(x + safeRadius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
+  ctx.lineTo(x, y + safeRadius);
+  ctx.quadraticCurveTo(x, y, x + safeRadius, y);
+  ctx.closePath();
+  ctx.fill();
 }
 
 function applyBoardTheme(boardName) {
@@ -276,6 +293,54 @@ function drawTexturedStone(x, y, size, image, edgeColor) {
   ctx.stroke();
 }
 
+function drawRoundedFinderModule(x, y, size, color) {
+  const inset = size * 0.06;
+  const moduleSize = size - inset * 2;
+  ctx.fillStyle = color;
+  fillRoundedRect(x + inset, y + inset, moduleSize, moduleSize, size * 0.2);
+}
+
+function drawFinderStone(x, y, size, theme, isDark, rounded) {
+  if (rounded && !isDark) {
+    drawRoundedFinderModule(x, y, size, 'rgba(255, 255, 255, 0.98)');
+    return;
+  }
+
+  if (styleSelect.value === 'simple' || textureError) {
+    drawSimpleStone(x, y, size, theme, isDark);
+    return;
+  }
+
+  if (isDark) {
+    drawTexturedStone(x, y, size, textureImages.black, 'rgba(255, 255, 255, 0.22)');
+    return;
+  }
+
+  drawTexturedStone(x, y, size, randomShellTexture(), 'rgba(196, 178, 146, 0.42)');
+}
+
+function drawFinderCell(x, y, size, theme, isDark) {
+  const finderStyle = finderSelect.value;
+
+  if (finderStyle === 'classic') {
+    ctx.fillStyle = isDark ? theme.dark : '#ffffff';
+    ctx.fillRect(x, y, size, size);
+    return;
+  }
+
+  if (finderStyle === 'rounded') {
+    drawRoundedFinderModule(x, y, size, isDark ? theme.dark : 'rgba(255, 255, 255, 0.98)');
+    return;
+  }
+
+  if (finderStyle === 'stones') {
+    drawFinderStone(x, y, size, theme, isDark, false);
+    return;
+  }
+
+  drawFinderStone(x, y, size, theme, isDark, true);
+}
+
 function randomShellTexture() {
   const shells = textureImages.shellWhite;
   if (shells.length === 0) return null;
@@ -341,8 +406,7 @@ function drawQr(qr, styleName) {
       const isDark = qr.isDark(row, col);
 
       if (isFinderCell(row, col, cellCount)) {
-        ctx.fillStyle = isDark ? theme.dark : '#ffffff';
-        ctx.fillRect(x, y, cellSize, cellSize);
+        drawFinderCell(x, y, cellSize, theme, isDark);
         continue;
       }
 
@@ -461,6 +525,13 @@ boardSelect.addEventListener('change', () => {
   renderFromState();
   if (lastQr) {
     message.textContent = `Switched board to ${boardSelect.value}`;
+  }
+});
+
+finderSelect.addEventListener('change', () => {
+  renderFromState();
+  if (lastQr) {
+    message.textContent = `Switched finder pattern to ${finderSelect.value}`;
   }
 });
 
