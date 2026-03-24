@@ -228,9 +228,11 @@ function drawSimpleStone(x, y, size, theme, dark) {
 }
 
 function drawTexturedStone(x, y, size, image, edgeColor) {
-  const radius = size * 0.42;
+  const radius = size * 0.445;
   const centerX = x + size / 2;
   const centerY = y + size / 2;
+  const textureInset = size * 0.035;
+  const textureSize = size - textureInset * 2;
 
   if (!image) {
     ctx.fillStyle = '#ddd';
@@ -248,7 +250,7 @@ function drawTexturedStone(x, y, size, image, edgeColor) {
   ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
   ctx.closePath();
   ctx.clip();
-  ctx.drawImage(image, x + size * 0.06, y + size * 0.06, size * 0.88, size * 0.88);
+  ctx.drawImage(image, x + textureInset, y + textureInset, textureSize, textureSize);
   ctx.restore();
 
   const gloss = ctx.createRadialGradient(
